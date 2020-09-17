@@ -132,6 +132,17 @@ FlowRouter.route('/home', {
 	},
 });
 
+FlowRouter.route('/votes-report', {
+	name: 'votesReport',
+
+	action() {
+		BlazeLayout.render('main', { center: 'votesReport' });
+	},
+	triggersExit: [function() {
+		$('.main-content').addClass('rc-old');
+	}],
+});
+
 FlowRouter.route('/directory', {
 	name: 'directory',
 

@@ -8,6 +8,7 @@ import { SideNav, menu } from '../../ui-utils';
 import { settings } from '../../settings';
 import { roomTypes, getUserPreference } from '../../utils';
 import { Users } from '../../models';
+import './votesReportNav';
 
 Template.sideNav.helpers({
 	flexTemplate() {

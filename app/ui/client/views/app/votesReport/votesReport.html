@@ -1,0 +1,60 @@
+<template name="votesReport">
+	<section class="votesReport">
+		{{> header sectionName="Votes Report" hideHelp=true fullpage=true}}
+		<div class="rc-table-content">
+			{{>tabs tabs=tabsData}}
+
+			{{#table fixed='true' onItemClick=onTableItemClick onScroll=onTableScroll onResize=onTableResize onSort=onTableSort}}
+				<thead>
+					<tr>
+						<th>
+							<div class="table-fake-th"><span>{{_ "Message"}}</span></div>
+						</th>
+						<th class="votesReport__voters">
+							<div class="table-fake-th"><span>{{_ "Voters"}}</span></div>
+						</th>
+						<th class="votesReport__channel-name">
+							<div class="table-fake-th"><span>{{_ "Room"}}</span></div>
+						</th>
+						<th class="table-column-date">
+							<div class="table-fake-th">{{_ "Date"}}</div>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					{{#each searchResults}}
+						<tr data-room="rId" data-message="mId">
+							<td>
+								message
+							</td>
+							<td class="votesReport__voters">
+								voters
+							</td>
+							<td class="votesReport__channel-name">
+								room
+							</td>
+							<td class="table-column-date">
+								date
+							</td>
+						</tr>
+					{{else}}
+						{{# with searchText}}
+							<tr class="table-no-click">
+								<td colspan="{{sumColumnCount 4 showLastMessage}}">
+									{{_ "No_results_found_for"}} {{.}}
+								</td>
+							</tr>
+						{{/with}}
+					{{/each}}
+					{{#if isLoading}}
+						<tr class="table-no-click">
+							<td class="table-loading-td" colspan="{{sumColumnCount 4 showLastMessage}}">
+								{{> loading}}
+							</td>
+						</tr>
+					{{/if}}
+				</tbody>
+			{{/table}}
+		</div>
+	</section>
+</template>
