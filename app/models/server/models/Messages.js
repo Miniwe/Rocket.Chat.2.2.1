@@ -471,7 +471,9 @@ export class Messages extends Base {
 	}
 
 	findByVotes(query = {}, options = {} ) {
-		return this.find(query, options);
+		const preparedQuery = {};
+		preparedQuery.votes = { $exists: true };
+		return this.find(preparedQuery, options);
 	}
 
 	findByRoomIdAndType(roomId, type, options) {

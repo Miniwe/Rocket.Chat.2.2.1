@@ -8,22 +8,28 @@ import { hasAllPermission } from '../../../../../authorization/client';
 import { t, roomTypes } from '../../../../../utils';
 import { settings } from '../../../../../settings';
 import { hasAtLeastOnePermission } from '../../../../../authorization';
+import { Users, ChatRoom } from '../../../../../models';
 import './votesReport.html';
 import './votesReport.css';
 
 function messagesSearch(config, cb) {
 	return Meteor.call('searchVotedMessages', config, (err, result) => {
-	// return Meteor.call('browseChannels', config, (err, result) => {
 		cb(result && result.results && result.results.length && result.results.map((result) => {
-			return result /* {
-				name: result.name,
-				users: result.usersCount || 0,
-				createdAt: timeAgo(result.ts, t),
-				lastMessage: result.lastMessage && timeAgo(result.lastMessage.ts, t),
-				description: result.description,
-				archived: result.archived,
-				topic: result.topic,
-			} */
+			const room = ChatRoom.findOne({_id: result.rid});
+			return {
+				// ...result,
+				_id: result._id,
+				rid: result.rid,
+				room: (room && room.name) || result.rid,
+				msg: result.msg,
+				votersUp: result.votes.up,
+				votersDown: result.votes.down,
+				// users: result.usersCount || 0,
+				date: timeAgo(result._updatedAt, t),
+				// description: result.description,
+				// archived: result.archived,
+				// topic: result.topic,
+			}
 		}));
 	});
 }
@@ -79,17 +85,20 @@ Template.votesReport.helpers({
 		let type;
 		let routeConfig;
 
-		console.log('onTableItemClick:', instance);
-		return function(item) {
-			if (searchType.get() === 'up_votes') {
-				type = 'c';
-				routeConfig = { name: item.name };
-			} else {
-				type = 'd';
-				routeConfig = { name: item.username };
-			}
-			roomTypes.openRouteLink(type, routeConfig);
+		console.log('onTableItemClick:', this, instance);
+		return (item) => {
+			console.log('aaa', item, this, instance);
 		};
+		// return function(item) {
+		// 	if (searchType.get() === 'up_votes') {
+		// 		type = 'c';
+		// 		routeConfig = { name: item.name };
+		// 	} else {
+		// 		type = 'd';
+		// 		routeConfig = { name: item.username };
+		// 	}
+		// 	roomTypes.openRouteLink(type, routeConfig);
+		// };
 	},
 	isLoading() {
 		return Template.instance().isLoading.get();
@@ -105,6 +114,14 @@ Template.votesReport.helpers({
 			.map((value) => (typeof value === 'number' ? value : Number(!!value)))
 			.reduce((sum, value) => sum + value, 0);
 	},
+});
+
+Template.votesReport.events({
+	'click td.votesReport__voters li'(e, t) {
+		e.preventDefault();
+		e.stopPropagation();
+		console.log('li click', e, t);
+	}
 });
 
 Template.votesReport.onRendered(function() {

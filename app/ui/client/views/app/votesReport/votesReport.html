@@ -23,18 +23,33 @@
 				</thead>
 				<tbody>
 					{{#each searchResults}}
-						<tr data-room="rId" data-message="mId">
-							<td>
-								message
+						<tr data-rid="{{rid}}" data-mid="{{_id}}">
+							<td class="votesReport__message">
+								{{msg}}
 							</td>
 							<td class="votesReport__voters">
-								voters
+								{{#if votersUp.length}}
+								<ul>
+									<p><strong><i class="icon-thumbs-up"></i> ({{votersUp.length}})</strong></p>
+									{{#each votersUp}}
+										<li>{{this}}</li>
+									{{/each}}
+								</ul>
+								{{/if}}
+								{{#if votersDown.length}}
+								<ul>
+									<p><strong><i class="icon-thumbs-down"></i> ({{votersDown.length}})</strong></p>
+									{{#each votersDown}}
+										<li>{{this}}</li>
+									{{/each}}
+								</ul>
+								{{/if}}
 							</td>
 							<td class="votesReport__channel-name">
-								room
+								{{room}}
 							</td>
 							<td class="table-column-date">
-								date
+								{{date}}
 							</td>
 						</tr>
 					{{else}}
