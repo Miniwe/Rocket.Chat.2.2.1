@@ -112,4 +112,5 @@ import '../app/promises/server';
 import '../app/ui-utils';
 import '../app/action-links';
 import '../app/reactions/server';
+import '../app/votes/server';
 import '../app/livechat/server';

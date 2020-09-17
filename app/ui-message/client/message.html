@@ -83,6 +83,10 @@
 				</div>
 			</div>
 
+			{{#unless system}}
+				{{> votes msg}}
+			{{/unless}}
+
 			{{#if hasOembed}}
 				{{#each msg.urls}}
 					{{injectIndex . @index}} {{> oembedBaseWidget}}

@@ -1,0 +1,16 @@
+<template name="votes">
+	<ul class="votes">
+		<li class="{{upSelected}}" data-vote="up">
+			<i class="icon-thumbs-up"></i>
+			{{#if upCount}}
+				<span class="vote-count">{{upCount}}</span>
+			{{/if}}
+		</li>
+		<li class="{{downSelected}}" data-vote="down">
+			<i class="icon-thumbs-down"></i>
+			{{#if downCount}}
+				<span class="vote-count">{{downCount}}</span>
+			{{/if}}
+		</li>
+	</ul>
+</template>

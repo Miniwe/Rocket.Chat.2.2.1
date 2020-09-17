@@ -80,6 +80,14 @@ export class Rooms extends Base {
 		return this._db.find(query, options);
 	}
 
+	setVotesInLastMessage(roomId, lastMessage) {
+		return this.update({ _id: roomId }, { $set: { 'lastMessage.votes': lastMessage.votes } });
+	}
+
+	unsetVotesInLastMessage(roomId) {
+		return this.update({ _id: roomId }, { $unset: { lastMessage: { votes: 1 } } });
+	}
+
 	setReactionsInLastMessage(roomId, lastMessage) {
 		return this.update({ _id: roomId }, { $set: { 'lastMessage.reactions': lastMessage.reactions } });
 	}
