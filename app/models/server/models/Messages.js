@@ -470,6 +470,10 @@ export class Messages extends Base {
 		return this.findOne(query);
 	}
 
+	findByVotes(query = {}, options = {} ) {
+		return this.find(query, options);
+	}
+
 	findByRoomIdAndType(roomId, type, options) {
 		const query = {
 			rid: roomId,
