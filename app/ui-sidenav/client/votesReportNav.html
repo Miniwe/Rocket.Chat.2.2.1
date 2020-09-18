@@ -1,5 +1,7 @@
 <template name="votesReportNav">
-	<ul class="rooms-list__list">
-		{{> sidebarItem pathSection="/votes-report" name="Most Voted Messages" }}
-	</ul>
+	{{#if votesReportAccess}}
+		<ul class="rooms-list__list">
+			{{> sidebarItem pathSection="/votes-report" name="Most Voted Messages" }}
+		</ul>
+	{{/if}}
 </template>

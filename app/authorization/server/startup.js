@@ -4,6 +4,7 @@ import { Meteor } from 'meteor/meteor';
 import { Roles, Permissions, Settings } from '../../models';
 import { settings } from '../../settings/server';
 import { getSettingPermissionId, CONSTANTS } from '../lib';
+import './votes-startup';
 
 Meteor.startup(function() {
 	// Note:

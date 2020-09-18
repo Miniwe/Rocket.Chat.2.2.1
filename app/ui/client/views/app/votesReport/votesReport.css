@@ -33,15 +33,16 @@
 	& &__channel-name,
 	& &__voters {
 		min-width: 30%;
+
 		vertical-align: top;
 	}
 
 	& &__message {
 		overflow: auto;
 
+		vertical-align: top;
 		white-space: unset;
 		text-overflow: unset;
-		vertical-align: top;
 
 		font-size: 0.8rem;
 	}
