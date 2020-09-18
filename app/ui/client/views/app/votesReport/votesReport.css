@@ -6,6 +6,10 @@
 
 	padding: 1.25rem 2rem;
 
+	td.table-column-date {
+		vertical-align: top;
+	}
+
 	& &__search-form {
 		display: grid;
 		grid-gap: 0 10px;
@@ -29,10 +33,7 @@
 	& &__channel-name,
 	& &__voters {
 		min-width: 30%;
-	}
-
-	& &__voters {
-		font-size: 0.8rem;
+		vertical-align: top;
 	}
 
 	& &__message {
@@ -40,6 +41,7 @@
 
 		white-space: unset;
 		text-overflow: unset;
+		vertical-align: top;
 
 		font-size: 0.8rem;
 	}
@@ -72,6 +74,10 @@
 
 				font-size: 1rem;
 			}
+		}
+
+		a {
+			color: #1d74f5;
 		}
 	}
 

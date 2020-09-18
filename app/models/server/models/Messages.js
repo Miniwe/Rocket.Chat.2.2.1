@@ -1,4 +1,5 @@
 import { Match } from 'meteor/check';
+import { Promise } from 'meteor/promise';
 import _ from 'underscore';
 
 import { Base } from './_Base';
@@ -473,7 +474,42 @@ export class Messages extends Base {
 	findByVotes(query = {}, options = {} ) {
 		const preparedQuery = {};
 		preparedQuery.votes = { $exists: true };
-		return this.find(preparedQuery, options);
+		if (query.type) {
+			const aggregate = [{
+				$match: {
+					[`votes.${ query.type }`]: { $exists: true }
+				}
+			},{
+				$project: {
+					t: 1,
+					rid: 1,
+					ts: 1,
+					msg: 1,
+					u: 1,
+					votes: 1,
+					votesCount: {
+						$cond: {
+							if: { $isArray: `$votes.${ query.type }` },
+							then: { $size: `$votes.${ query.type }` },
+							else: 0,
+						},
+					},
+				},
+			}, {
+				$limit: 10,
+			}, {
+				$sort: {
+					votesCount: -1,
+				},
+			}];
+			const results = Promise.await(this.model.rawCollection().aggregate(aggregate).toArray());
+			return {
+				count() { return results.length; },
+				fetch() { return results; },
+			};
+		} else {
+			return this.find(preparedQuery, options);
+		}
 	}
 
 	findByRoomIdAndType(roomId, type, options) {

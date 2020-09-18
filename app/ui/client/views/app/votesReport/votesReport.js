@@ -1,36 +1,34 @@
 import { Meteor } from 'meteor/meteor';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { Template } from 'meteor/templating';
-import _ from 'underscore';
+import { Blaze } from 'meteor/blaze';
 
 import { timeAgo } from '../helpers';
 import { hasAllPermission } from '../../../../../authorization/client';
 import { t, roomTypes } from '../../../../../utils';
-import { settings } from '../../../../../settings';
-import { hasAtLeastOnePermission } from '../../../../../authorization';
-import { Users, ChatRoom } from '../../../../../models';
+import { Subscriptions, ChatRoom } from '../../../../../models';
 import './votesReport.html';
 import './votesReport.css';
 
 function messagesSearch(config, cb) {
 	return Meteor.call('searchVotedMessages', config, (err, result) => {
-		cb(result && result.results && result.results.length && result.results.map((result) => {
-			const room = ChatRoom.findOne({_id: result.rid});
-			return {
-				// ...result,
-				_id: result._id,
-				rid: result.rid,
-				room: (room && room.name) || result.rid,
-				msg: result.msg,
-				votersUp: result.votes.up,
-				votersDown: result.votes.down,
-				// users: result.usersCount || 0,
-				date: timeAgo(result._updatedAt, t),
-				// description: result.description,
-				// archived: result.archived,
-				// topic: result.topic,
-			}
-		}));
+		cb(
+			result &&
+				result.results &&
+				result.results.length &&
+				result.results.map((result) => {
+					const room = ChatRoom.findOne({ _id: result.rid });
+					return {
+						_id: result._id,
+						rid: result.rid,
+						room: (room && room.name) || result.rid,
+						msg: result.msg,
+						votersUp: result.votes && result.votes.up,
+						votersDown: result.votes && result.votes.down,
+						date: timeAgo(result._updatedAt, t),
+					};
+				})
+		);
 	});
 }
 
@@ -42,12 +40,7 @@ Template.votesReport.helpers({
 		return Template.instance().searchType.get();
 	},
 	tabsData() {
-		const {
-			searchType,
-			results,
-			end,
-			page,
-		} = Template.instance();
+		const { searchType, results, end, page } = Template.instance();
 		const upTab = {
 			label: t('Up Votes'),
 			value: 'up_votes',
@@ -77,29 +70,6 @@ Template.votesReport.helpers({
 			},
 		};
 	},
-	onTableItemClick() {
-		const instance = Template.instance();
-
-		const { searchType } = instance;
-
-		let type;
-		let routeConfig;
-
-		console.log('onTableItemClick:', this, instance);
-		return (item) => {
-			console.log('aaa', item, this, instance);
-		};
-		// return function(item) {
-		// 	if (searchType.get() === 'up_votes') {
-		// 		type = 'c';
-		// 		routeConfig = { name: item.name };
-		// 	} else {
-		// 		type = 'd';
-		// 		routeConfig = { name: item.username };
-		// 	}
-		// 	roomTypes.openRouteLink(type, routeConfig);
-		// };
-	},
 	isLoading() {
 		return Template.instance().isLoading.get();
 	},
@@ -117,11 +87,26 @@ Template.votesReport.helpers({
 });
 
 Template.votesReport.events({
-	'click td.votesReport__voters li'(e, t) {
+	'click a[data-msg]'(e) {
 		e.preventDefault();
 		e.stopPropagation();
-		console.log('li click', e, t);
-	}
+		const { rid, _id } = Blaze.getData(e.currentTarget);
+		const room = Subscriptions.findOne({ rid });
+		roomTypes.openRouteLink(room.t, { name: room.name }, { msg: _id });
+	},
+	'click a[data-user]'(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		const { user } = e.currentTarget.dataset;
+		roomTypes.openRouteLink('d', { name: user });
+	},
+	'click a[data-rid]'(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		const { rid } = Blaze.getData(e.currentTarget);
+		const room = Subscriptions.findOne({ rid });
+		roomTypes.openRouteLink(room.t, { name: room.name });
+	},
 });
 
 Template.votesReport.onRendered(function() {
@@ -176,6 +161,8 @@ Template.votesReport.onCreated(function() {
 	this.canViewOtherUserInfo = new ReactiveVar(false);
 
 	this.autorun(() => {
-		this.canViewOtherUserInfo.set(hasAllPermission('view-full-other-user-info'));
+		this.canViewOtherUserInfo.set(
+			hasAllPermission('view-full-other-user-info')
+		);
 	});
 });

@@ -1,10 +1,10 @@
 <template name="votesReport">
 	<section class="votesReport">
-		{{> header sectionName="Votes Report" hideHelp=true fullpage=true}}
+		{{> header sectionName="Most Votes Messages" hideHelp=true fullpage=true}}
 		<div class="rc-table-content">
 			{{>tabs tabs=tabsData}}
 
-			{{#table fixed='true' onItemClick=onTableItemClick}}
+			{{#table fixed='true'}}
 				<thead>
 					<tr>
 						<th>
@@ -23,16 +23,16 @@
 				</thead>
 				<tbody>
 					{{#each searchResults}}
-						<tr data-rid="{{rid}}" data-mid="{{_id}}">
+						<tr>
 							<td class="votesReport__message">
-								{{msg}}
+								<a data-msg="{{_id}}" href="#{{_id}}">{{msg}}</a>
 							</td>
 							<td class="votesReport__voters">
 								{{#if votersUp.length}}
 								<ul>
 									<p><strong><i class="icon-thumbs-up"></i> ({{votersUp.length}})</strong></p>
 									{{#each votersUp}}
-										<li>{{this}}</li>
+									<li><a data-user="{{this}}" href="#{{this}}">{{this}}</a></li>
 									{{/each}}
 								</ul>
 								{{/if}}
@@ -40,13 +40,13 @@
 								<ul>
 									<p><strong><i class="icon-thumbs-down"></i> ({{votersDown.length}})</strong></p>
 									{{#each votersDown}}
-										<li>{{this}}</li>
+									<li><a data-user="{{this}}" href="#{{this}}">{{this}}</a></li>
 									{{/each}}
 								</ul>
 								{{/if}}
 							</td>
 							<td class="votesReport__channel-name">
-								{{room}}
+								<a data-rid="{{rid}}" href="#{{rid}}">{{room}}</a>
 							</td>
 							<td class="table-column-date">
 								{{date}}
